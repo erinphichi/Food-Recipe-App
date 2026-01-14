@@ -1,31 +1,19 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import {
-  View,
-  Text,
-  FlatList,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 
 export default function FavoriteScreen() {
+
   const navigation = useNavigation();
 
   // Assuming you have a similar structure for recipes in your Redux store
   const favoriteRecipes = useSelector((state) => state.favorites);
-  const favoriteRecipesList = favoriteRecipes?.favoriterecipes || [];
-  console.log(favoriteRecipes.favoriterecipes);
-  console.log('favoriteRecipesList',favoriteRecipesList);
   
+  const favoriteRecipesList = favoriteRecipes?.favoriteRecipes || [];
   
-
-  if (favoriteRecipesList.length === 0) {
+    if (favoriteRecipesList.length === 0) {
     return (
       <View style={styles.emptyContainer}>
         <Text style={styles.emptyText}>No favorite recipes yet!</Text>
@@ -49,31 +37,46 @@ export default function FavoriteScreen() {
 
   return (
     <>
-      {/* Heading */}
-      <View testID="FavoriteRecipes">
+      {/* Back Button and Heading */}
+      <View style={styles.headerContainer}>
         <Text
-          style={{ fontSize: hp(3.8), marginTop: hp(4), marginLeft: 20 }}
-          className="font-semibold text-neutral-600"
-        >
+          style={styles.headingText}
+          className="font-semibold text-neutral-600">
           My Favorite Recipes
         </Text>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={{
+            backgroundColor: "#2563EB",
+            padding: 10,
+            borderRadius: 5,
+            marginTop: 10,
+            width: 100,
+            alignItems: "center",
+            marginLeft: 20,
+          }}
+        >
+            <Text style={{ color: "#fff" }}>Go back</Text>
+          </TouchableOpacity>
       </View>
-    
-      <TouchableOpacity
-        onPress={() => navigation.goBack()}
-        style={{
-          backgroundColor: "#2563EB",
-          padding: 10,
-          borderRadius: 5,
-          marginTop: 10,
-          width: 100,
-          alignItems: "center",
-          marginLeft: 20,
-        }}
-      >
-        <Text style={{ color: "#fff" }}>Go back</Text>
-      </TouchableOpacity>
-    
+      
+      <FlatList
+        data={favoriteRecipesList}
+        contentContainerStyle={styles.listContentContainer}
+        keyExtractor={(item) => item.idFood}  // Update the key according to your recipe data
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={styles.cardContainer}
+            onPress={() => navigation.navigate("RecipeDetail", item)} // Navigate to the recipe detail screen
+          >
+            <Image source={{ uri: item.recipeImage }} // Assuming your recipes have a thumbnail field
+                    style={styles.recipeImage}
+            />
+            <Text style={styles.recipeTitle}>
+              {item.recipeName.length > 20 ? `${item.recipeName.slice(0, 20)}...` : item.recipeName}</Text>
+            </TouchableOpacity>
+        )}
+      />
     </>
   );
 }
@@ -87,6 +90,17 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: hp(2.5),
     color: "#6B7280", // text-neutral-600
+  },
+  headerContainer: {
+    marginTop: hp(4),
+    marginLeft: 20,
+    marginRight: 20,
+  },
+  headingText: {
+    fontSize: hp(3.8),
+    fontWeight: "600",
+    color: "#4B5563",
+    marginLeft: 20,
   },
   listContentContainer: {
     paddingHorizontal: wp(4),

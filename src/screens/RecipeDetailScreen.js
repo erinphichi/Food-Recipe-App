@@ -1,21 +1,21 @@
-import {View,Text,ScrollView,TouchableOpacity,Image,StyleSheet,} from "react-native";
+import {View, Text, ScrollView, TouchableOpacity, Image, StyleSheet } from "react-native";
 import React from "react";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux"; // Redux hooks
 import { toggleFavorite } from "../redux/favoritesSlice"; // Redux action
 
 export default function RecipeDetailScreen(props) {
+
   const recipe = props.route.params; // recipe passed from previous screen
 
   const dispatch = useDispatch();
-  const favoriterecipes = useSelector(
-    (state) => state.favorites.favoriterecipes
+  
+  const favoriteRecipes = useSelector(
+    (state) => state.favorites.favoriteRecipes
   );
-  const isFavourite = favoriterecipes?.some(
+  
+  const isFavourite = favoriteRecipes?.some(
     (favrecipe) => favrecipe.idFood === recipe.idFood
   ); // Check by idrecipe
 
@@ -33,7 +33,10 @@ export default function RecipeDetailScreen(props) {
     >
       {/* recipe Image */}
       <View style={styles.imageContainer} testID="imageContainer">
-     
+        <Image 
+          source={{ uri: recipe.recipeImage }}
+          style={styles.recipeImage}
+        />
       </View>
 
       {/* Back Button and Favorite Button */}
@@ -61,32 +64,58 @@ export default function RecipeDetailScreen(props) {
   
         <View style={styles.contentContainer}>
           {/* Title and Category */}
-          <View
-            style={styles.recipeDetailsContainer}
-            testID="recipeDetailsContainer"
-          >
-            <Text style={styles.recipeTitle} testID="recipeTitle">
-         
-              
-              </Text>
-            <Text style={styles.recipeCategory} testID="recipeCategory">
-              </Text>
+          <View style={styles.recipeDetailsContainer} testID="recipeDetailsContainer"> 
+            <Text style={styles.recipeTitle} testID="recipeTitle">{recipe.recipeName}</Text>
+            <Text style={styles.recipeCategory} testID="recipeCategory">{recipe.recipeCategory}</Text>
           </View>
           <View style={styles.miscContainer} testID="miscContainer">
-        
+            <View style={styles.miscItem}>
+              <Text style={styles.miscIcon}>🕒</Text>
+              <Text style={styles.miscText}>35 Mins</Text>
+            </View>
+            <View style={styles.miscItem}>
+              <Text style={styles.miscIcon}>👥</Text>
+              <Text style={styles.miscText}>03 Servings</Text>
+            </View>
+            <View style={styles.miscItem}>
+              <Text style={styles.miscIcon}>🔥</Text>
+              <Text style={styles.miscText}>103 Cal</Text>
+            </View>
+            <View style={styles.miscItem}>
+              <Text style={styles.miscIcon}>🎚️</Text>
+              <Text style={styles.miscText}>Medium</Text>
+            </View>
       </View>
 
       {/* Ingredients */}
       <View style={styles.sectionContainer}>
-     
+          <Text style={styles.sectionTitle}>Ingredients</Text>
+            <View style={styles.ingredientsList} testID="ingredientsList">
+              {(recipe.ingredients).map((i) => (
+                <View key={i} style={styles.ingredientItem}>
+                  <View style={styles.ingredientBullet}/>
+                  <Text style={styles.ingredientText}>
+                    {/* {meal["strMeasure" + i]} {meal["strIngredient" + i]} */}
+                    {i.ingredientName} {i.measure}
+                  </Text>
+                </View>
+              ))}
+            </View>
       </View>
 
       {/* Instructions */}
       <View style={styles.sectionContainer} testID="sectionContainer">
         
+        <View>
+          {/* Cooking Description */}
+          <Text style={styles.sectionTitle}>Cooking Description</Text>
+          <Text style={styles.descriptionText}>{recipe.cookingDescription}</Text>
         </View>
-          {/* Description */}
-         
+
+        </View>
+          {/* Recipe Instructions */}
+          <Text style={styles.sectionTitle}>Recipe Instructions</Text>
+         <Text style={styles.instructionsText}>{recipe.recipeInstructions}</Text>
         </View>
     </ScrollView>
   );
@@ -249,7 +278,8 @@ const styles = StyleSheet.create({
     fontFamily: "Lato",
   },
   sectionContainer: {
-    marginHorizontal: wp(5),
+    // marginHorizontal: wp(5),
+    marginHorizontal: 0,
     marginBottom: 20,
   },
   sectionTitle: {
@@ -260,7 +290,8 @@ const styles = StyleSheet.create({
     fontFamily: "Lato",
   },
   ingredientsList: {
-    marginLeft: wp(4),
+    // marginLeft: wp(4),
+    marginLeft: 0,
   },
   ingredientItem: {
     flexDirection: "row",

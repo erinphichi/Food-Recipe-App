@@ -39,9 +39,7 @@ export default function FavoriteScreen() {
     <>
       {/* Back Button and Heading */}
       <View style={styles.headerContainer}>
-        <Text
-          style={styles.headingText}
-          className="font-semibold text-neutral-600">
+        <Text style={styles.headingText}>
           My Favorite Recipes
         </Text>
         <TouchableOpacity
